@@ -14,7 +14,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 group 'cn.enaium.humblemc'
-version '1.1.0'
+version '1.2.0'
 
 def asmVersion = '9.2'
 
