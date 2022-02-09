@@ -92,13 +92,13 @@ public class Tweaker implements ITweaker {
             while (resources.hasMoreElements()) {
                 URL url = resources.nextElement();
 
-                ModInfo modInfo = new Gson().fromJson(new String(Files.readAllBytes(Paths.get(url.toURI())), StandardCharsets.UTF_8), ModInfo.class);
+                ModInfo modInfo = new Gson().fromJson(IOUtils.toString(url.openStream(), StandardCharsets.UTF_8), ModInfo.class);
                 if (modInfo.getMixin() != null) {
                     mixins.add(modInfo.getMixin());
                 }
                 LogWrapper.log("HumbleLoader", Level.INFO, "%s | %s | %s | %s", modInfo.getName(), modInfo.getAuthor(), modInfo.getVersion(), modInfo.getDescription());
             }
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
