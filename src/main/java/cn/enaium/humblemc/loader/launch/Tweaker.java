@@ -16,18 +16,14 @@ import org.spongepowered.asm.mixin.Mixins;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
@@ -80,17 +76,7 @@ public class Tweaker implements ITweaker {
                         try {
                             JarFile jarFile = new JarFile(file.toFile());
                             if (jarFile.getEntry("humble.mod.json") != null) {
-                                String s = IOUtils.toString(jarFile.getInputStream(new JarEntry("humble.mod.json")), StandardCharsets.UTF_8);
                                 classLoader.addURL(file.toUri().toURL());
-                                ModInfo modInfo = new Gson().fromJson(s, ModInfo.class);
-                                if (modInfo.getMixin() != null) {
-                                    if (jarFile.getEntry(modInfo.getMixin()) != null) {
-                                        mixins.add(modInfo.getMixin());
-                                    } else {
-                                        LogWrapper.log("HumbleLoader", Level.ERROR, "MixinConfiguration %s not found", modInfo.getMixin());
-                                    }
-                                }
-                                LogWrapper.log("HumbleLoader", Level.INFO, "%s | %s | %s | %s", modInfo.getName(), modInfo.getAuthor(), modInfo.getVersion(), modInfo.getDescription());
                             } else {
                                 LogWrapper.log("HumbleLoader", Level.WARN, "Ignore %s it is not a humble mod or humble.mod.json not found", file.toFile().getName());
                             }
@@ -101,7 +87,18 @@ public class Tweaker implements ITweaker {
                     return super.visitFile(file, attrs);
                 }
             });
-        } catch (IOException e) {
+
+            Enumeration<URL> resources = classLoader.getResources("humble.mod.json");
+            while (resources.hasMoreElements()) {
+                URL url = resources.nextElement();
+
+                ModInfo modInfo = new Gson().fromJson(new String(Files.readAllBytes(Paths.get(url.toURI())), StandardCharsets.UTF_8), ModInfo.class);
+                if (modInfo.getMixin() != null) {
+                    mixins.add(modInfo.getMixin());
+                }
+                LogWrapper.log("HumbleLoader", Level.INFO, "%s | %s | %s | %s", modInfo.getName(), modInfo.getAuthor(), modInfo.getVersion(), modInfo.getDescription());
+            }
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
 
