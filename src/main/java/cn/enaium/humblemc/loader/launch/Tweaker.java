@@ -1,13 +1,26 @@
+/**
+ * Copyright (C) 2022 Enaium
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cn.enaium.humblemc.loader.launch;
 
 import cn.enaium.humblemc.loader.mod.ModInfo;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.launchwrapper.LogWrapper;
-import net.minecraft.launchwrapper.template.TemplateTarget;
-import net.minecraft.launchwrapper.template.TemplateTransformer;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.launch.MixinBootstrap;
@@ -15,21 +28,12 @@ import org.spongepowered.asm.mixin.Mixins;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.rmi.RemoteException;
 import java.util.*;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 /**
  * @author Enaium
